@@ -3,3 +3,5 @@
 .RData
 .Ruserdata
 ggradar.Rproj
+.DS_Store
+._*

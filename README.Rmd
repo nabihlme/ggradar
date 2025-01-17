@@ -23,9 +23,8 @@ devtools::install_github("ricardo-bion/ggradar",
 
 ```{r, fig.width=15, fig.height=10}
 library(ggradar)
-library(dplyr)
+library(tidyverse)
 library(scales)
-library(tibble)
 
 mtcars_radar <- mtcars %>% 
   as_tibble(rownames = "group") %>% 
@@ -46,11 +45,16 @@ ggradar(mtcars_radar)
 
 You can also use custom font family in `ggradar`. In the following example, you would like to use Airbnb's font family named 'Circular Air' by first downloading it, installing it in your computer (not shown), and then registering it to R using `extrafont` package.
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 # configured to work on a Mac, change directory to Unix or Windows
-download.file("https://github.com/ricardo-bion/ggtech/blob/master/Circular%20Air-Light%203.46.45%20PM.ttf", "~/Circular Air-Light 3.46.45 PM.ttf", method = "curl")
+download.file("https://github.com/ricardo-bion/ggtech/raw/refs/heads/master/Circular%20Air-Light%203.46.45%20PM.ttf", "~/Circular Air-Light 3.46.45 PM.ttf")
 
-extrafont::font_import(pattern = 'Circular', prompt = FALSE)
+library(showtext)
+
+font_add("Circular Air", regular = "~/Circular Air-Light 3.46.45 PM.ttf")
+
+showtext_auto()
+
 ```
 
 Following the same procedure as in the previous example, you can then use 'Circular Air' font family in `ggradar` by adjusting `font.radar` argument. The following example shows that `ggradar` is also can be used in pipe `%>%`.
@@ -62,5 +66,33 @@ mtcars %>%
   tail(4) %>% 
   select(1:10) %>% 
   ggradar(font.radar = "Circular Air")
+```
+
+## Axis Font Styling
+
+Example of adding observation count in bold to axis labels.
+
+```{r, fig.width=15, fig.height=10}
+
+label_bold = function(row) {
+  name <- as.character(row[1])
+  n <- as.character(row[2])
+  deparse(bquote(bold(.(n))~.(name)))
+}
+
+chickwts %>%
+  group_by(feed) %>%
+  summarise(n=n(), .groups="drop") %>%
+  apply(1, label_bold) ->
+  axis.labels
+
+chickwts %>%
+  group_by(feed) %>%
+  summarise(mean_weight=mean(weight), .groups="drop") %>%
+  mutate(group = 1) %>%
+  mutate_at(vars(-group, -feed), rescale) %>%
+  spread(feed, mean_weight) %>%
+  ggradar(plot.title = "Chicken Weights by Feed Type", axis.labels = axis.labels, axis.label.parse = TRUE)
+
 ```
 

@@ -25,6 +25,7 @@
 #' @param label.gridline.min whether or not to label the mininum gridline
 #' @param label.gridline.mid whether or not to label the 'mininum'average' gridline
 #' @param label.gridline.max whether or not to label the maximum gridline
+#' @param axis.label.parse whether or not to parse axis labels into expressions and displayed as described in ?plotmath
 #' @param axis.label.offset vertical displacement of axis labels from maximum grid line, measured relative to circle diameter
 #' @param axis.label.size text size of axis label
 #' @param axis.line.colour colour of axis line
@@ -94,6 +95,7 @@ ggradar <- function(plot.data,
                     label.gridline.min = TRUE,
                     label.gridline.mid = TRUE,
                     label.gridline.max = TRUE,
+                    axis.label.parse = FALSE,
                     axis.label.offset = 1.15,
                     axis.label.size = 5,
                     axis.line.colour = "grey",
@@ -240,7 +242,7 @@ ggradar <- function(plot.data,
     coord_equal() +
     geom_text(
       data = subset(axis$label, axis$label$x < (-x.centre.range)),
-      aes(x = x, y = y, label = text), size = axis.label.size, hjust = 1, family = font.radar
+      aes(x = x, y = y, label = text), size = axis.label.size, hjust = 1, family = font.radar, parse=axis.label.parse
     ) +
     scale_x_continuous(limits = c(-1.5 * plot.extent.x, 1.5 * plot.extent.x)) +
     scale_y_continuous(limits = c(-plot.extent.y, plot.extent.y))
@@ -262,12 +264,12 @@ ggradar <- function(plot.data,
   # + axis labels for any vertical axes [abs(x)<=x.centre.range]
   base <- base + geom_text(
     data = subset(axis$label, abs(axis$label$x) <= x.centre.range),
-    aes(x = x, y = y, label = text), size = axis.label.size, hjust = 0.5, family = font.radar
+    aes(x = x, y = y, label = text), size = axis.label.size, hjust = 0.5, family = font.radar, parse=axis.label.parse
   )
   # + axis labels for any vertical axes [x>x.centre.range]
   base <- base + geom_text(
     data = subset(axis$label, axis$label$x > x.centre.range),
-    aes(x = x, y = y, label = text), size = axis.label.size, hjust = 0, family = font.radar
+    aes(x = x, y = y, label = text), size = axis.label.size, hjust = 0, family = font.radar, parse=axis.label.parse
   )
   # + theme_clear [to remove grey plot background, grid lines, axis tick marks and axis text]
   base <- base + theme_clear
