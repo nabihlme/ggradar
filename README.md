@@ -49,8 +49,8 @@ ggradar(mtcars_radar)
 
 You can also use custom font family in `ggradar`. In the following
 example, you would like to use Airbnb’s font family named ‘Circular Air’
-by first downloading it, installing it in your computer (not shown), and
-then registering it to R using `extrafont` package.
+by first downloading it and then registering it to R using `showtext`
+package.
 
 ``` r
 # configured to work on a Mac, change directory to Unix or Windows
